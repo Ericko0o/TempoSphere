@@ -1,7 +1,14 @@
+// backend/server.js
 import express from "express";
 import cors from "cors";
 import axios from "axios";
 import pool from "./config/db.js";
+
+// Importar rutas
+import forumRoutes from "./src/routes/forum.routes.js";
+import forecastRoutes from "./src/routes/forecast.routes.js";
+import newsRoutes from "./src/routes/news.routes.js";
+import wmsRoutes from "./src/routes/wms.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -95,8 +102,16 @@ app.get("/api/openaq/cities", async (req, res) => {
   }
 });
 
+// ✅ Montar rutas externas
+app.use("/api/forum", forumRoutes);
+app.use("/api/forecast", forecastRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/proxy", wmsRoutes);
 
-// ✅ Inicializar servidor
+// ✅ Inicializar servidor (SOLO UNA VEZ)
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+import airQualityRoutes from "./src/routes/airQuality.routes.js";
+app.use("/api/airquality", airQualityRoutes);

@@ -1,24 +1,39 @@
-import { useEffect, useState } from "react";
+// client/src/App.jsx
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home.jsx";
+import Discover from "./pages/Discover.jsx";
+import News from "./pages/News.jsx";
+import Forum from "./pages/Forum.jsx";
+import Forecast from "./pages/Forecast.jsx";
+import Review from "./pages/Review.jsx";
+import Ranking from "./pages/Ranking.jsx";
+import Profile from "./pages/Profile.jsx";
 
 export default function App() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/airquality")
+    fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5001"}/api/airquality/global`)
       .then((res) => res.json())
       .then((json) => setData(json))
-      .catch((err) => console.error("Error al conectar con backend:", err));
+      .catch((err) => console.warn("Warning: backend not reachable — running with mocks", err));
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-sky-900 to-cyan-700 text-white">
-      <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">TempoSphere 🌍</h1>
-
-      {data ? (
-        <p className="text-xl">{data.message}</p>
-      ) : (
-        <p className="text-xl text-gray-300">Conectando con backend...</p>
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home data={data} />} />      {/* 👈 ahora Home se renderiza */}
+        <Route path="/home" element={<Home data={data} />} />  {/* alias opcional */}
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/forum" element={<Forum />} />
+        <Route path="/forecast" element={<Forecast />} />
+        <Route path="/ranking" element={<Ranking />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </Router>
   );
 }
